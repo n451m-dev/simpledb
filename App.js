@@ -44,7 +44,8 @@ const App = () => {
       });
       animation.start(() => {
         removeBalloon();
-        setScore(score / 2); // decrease the score by half when the balloon reaches the bottom without being touched
+        if(score>0)
+        setScore(score - 5); // decrease the score by half when the balloon reaches the bottom without being touched
       });
     }
   }, [balloon, score]);
@@ -54,7 +55,7 @@ const App = () => {
     if (balloon) {
       balloon.y.stopAnimation(); // stop the current animation
       removeBalloon();
-      setScore(score + 1); // increase the score by 1 when a balloon is touched
+      setScore(score + 10); // increase the score by 10 when a balloon is touched
     }
   };
 
