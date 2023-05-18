@@ -10,7 +10,7 @@ const App = () => {
   const createBalloon = () => {
     const newBalloon = {
       id: Math.random(),
-      x: Math.random() * 300, // set random x position
+      x: new Animated.Value(Math.floor(Math.random() * (203 - (-53) + 1) + (-53)) - 150),// set random x position
       y: new Animated.Value(-50), // set initial y position above the screen as an Animated value
       size: 150, // set random size
       speed: 3, // set fixed falling speed
@@ -66,7 +66,7 @@ const App = () => {
       </View>
       {balloon && (
         <TouchableOpacity onPressIn={handleBalloonTouch}>
-          <Animated.View style={{ transform: [{ translateY: balloon.y }], position: 'absolute' }}>
+          <Animated.View style={{ transform: [{ translateY: balloon.y}, { translateX: balloon.x }], position: 'absolute' }}>
             <Image
               source={require('./assets/balloon.png')}
               style={{ width: balloon.size, height: balloon.size, tintColor: balloon.color }}
