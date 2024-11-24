@@ -1,22 +1,29 @@
 {
-  "name": "balloonbust",
+  "name": "simple-db",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "description": "Its a simple document based database project created on top of rocksdb",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts"
   },
-  "dependencies": {
-    "expo": "~48.0.15",
-    "expo-status-bar": "~1.4.4",
-    "randomcolor": "^0.6.2",
-    "react": "18.2.0",
-    "react-native": "0.71.7"
-  },
+  "keywords": [
+    "database",
+    "db",
+    "document",
+    "rocksdb",
+    "leveldown"
+  ],
+  "author": "nasim",
+  "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.20.0"
-  },
-  "private": true
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0",
+    "typescript": "^5.7.2"
+  }
 }

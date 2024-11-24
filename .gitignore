@@ -1,17 +1,77 @@
+# Node.js dependencies
 node_modules/
-.expo/
+
+# Build output
 dist/
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
+build/
 
-# macOS
+# TypeScript cache and output
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS-specific files
 .DS_Store
+Thumbs.db
 
-# Temporary files created by Metro to check the health of the file watcher
-.metro-health-check*
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.ps1
+*.iml
+
+# Git-specific files
+.git/
+.gitconfig
+.gitignore
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.old
+*.seed
+*.pid
+*.pid.lock
+
+# Coverage directories
+coverage/
+
+# Miscellaneous
+*.tgz
+*.lock-wscript
+package-lock.json
+yarn.lock
+
+# Optional npm cache directory
+.npm/
+
+# Testing files
+.jest/
+.vitest/
+
+# Linting and formatting tools
+.eslintcache
+.stylelintcache
+.prettierignore
+.prettierrc
+
+# RocksDB temporary data
+/data/
+*.ldb
+
+# Ignore environment files
+.env
