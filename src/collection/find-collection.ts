@@ -1,16 +1,16 @@
-import RocksDB from 'rocksdb';
+import { LevelUp } from 'levelup';
 
-export async function findCollection(db: RocksDB, collectionName: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const collectionKey = `__collection:${collectionName}`;
-        db.get(collectionKey, (err, value) => {
-            if (err && err.message.includes('NotFound')) {
-                return resolve(false);
-            }
-            if (err) {
-                return reject(err);
-            }
-            resolve(true);
-        });
-    });
+export async function findCollection(db: LevelUp, collectionName: string): Promise<boolean> {
+    if (!collectionName || typeof collectionName !== 'string') {
+        throw new Error('Collection name must be a non-empty string.');
+    }
+
+    const collectionKey = `__collection:${collectionName}`;
+    try {
+        await db.get(collectionKey);
+        return true;
+    } catch (err: any) {
+        if (err.notFound) return false;
+        throw err;
+    }
 }

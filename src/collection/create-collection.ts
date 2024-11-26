@@ -1,12 +1,15 @@
-import RocksDB from 'rocksdb';
+import { LevelUp } from 'levelup';
 
-export async function createCollection(db: RocksDB, collectionName: string): Promise<void> {
+export async function createCollection(db: LevelUp, collectionName: string): Promise<void> {
+    if (!collectionName || typeof collectionName !== 'string') {
+        throw new Error('Collection name must be a non-empty string.');
+    }
+
     const collectionKey = `__collection:${collectionName}`;
+    const exists = await db.get(collectionKey).catch((err) => (err.notFound ? false : Promise.reject(err)));
+    if (exists) {
+        throw new Error(`Collection "${collectionName}" already exists.`);
+    }
 
-    return new Promise((resolve, reject) => {
-        db.put(collectionKey, 'exists', (err) => {
-            if (err) return reject(err);
-            resolve();
-        });
-    });
+    return db.put(collectionKey, 'exists');
 }

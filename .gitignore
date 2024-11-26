@@ -75,3 +75,4 @@ yarn.lock
 
 # Ignore environment files
 .env
+librocksdb.so*

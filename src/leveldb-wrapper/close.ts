@@ -1,13 +1,12 @@
-import RocksDB from 'rocksdb';
+import { LevelUp } from 'levelup';
 
 /**
- * Closes the RocksDB instance gracefully.
- * 
- * @param db - The RocksDB instance to close.
+ * Closes the database instance gracefully.
+ *
+ * @param db - The database instance to close.
  * @returns A promise that resolves when the database is closed.
- * @throws An error if the close operation fails.
  */
-export async function closeDB(db: RocksDB): Promise<void> {
+export async function closeDB(db: LevelUp): Promise<void> {
     return new Promise((resolve, reject) => {
         db.close((err) => {
             if (err) return reject(new Error(`Failed to close database: ${err.message}`));

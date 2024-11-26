@@ -1,29 +1,42 @@
-import RocksDB from 'rocksdb';
+import { LevelUp } from 'levelup';
 
-export async function truncateCollection(db: RocksDB, collectionName: string): Promise<void> {
+export async function truncateCollection(db: LevelUp, collectionName: string): Promise<void> {
+    if (!collectionName || typeof collectionName !== 'string') {
+        throw new Error('Collection name must be a non-empty string.');
+    }
+
+    const collectionKey = `__collection:${collectionName}`;
+    const exists = await db.get(collectionKey).catch((err) => (err.notFound ? false : Promise.reject(err)));
+    if (!exists) {
+        throw new Error(`Collection "${collectionName}" does not exist.`);
+    }
+
     return new Promise((resolve, reject) => {
-        // Prefix key pattern for documents in the collection
         const collectionPrefix = `${collectionName}:`;
-
-        // Create an iterator to scan for all document keys in the collection
         const iterator = db.iterator({ gte: collectionPrefix, lte: `${collectionPrefix}\xff` });
 
-        iterator.each((err: any, key: RocksDB.Bytes) => {
-            if (err) {
-                iterator.end(() => reject(err));
-            }
-            if (key) {
-                // Delete the document by its key
-                db.del(key, (delErr) => {
-                    if (delErr) {
-                        iterator.end(() => reject(delErr));
-                    }
-                });
-            }
-        });
-
-        iterator.end(() => {
-            resolve(); // After scanning and deleting all document keys
-        });
+        const processNext = () => {
+            iterator.next((err, key) => {
+                if (err) {
+                    iterator.end(() => reject(err));
+                    return;
+                }
+                if (key) {
+                    db.del(key, (delErr) => {
+                        if (delErr) {
+                            iterator.end(() => reject(delErr));
+                            return;
+                        }
+                        processNext();
+                    });
+                } else {
+                    iterator.end((endErr) => {
+                        if (endErr) return reject(endErr);
+                        resolve();
+                    });
+                }
+            });
+        };
+        processNext();
     });
 }

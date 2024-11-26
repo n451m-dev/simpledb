@@ -1,11 +1,11 @@
-import RocksDB from 'rocksdb';
-import { get } from '../../rocksdb-wrapper/get';
+import { LevelUp } from 'levelup';
 import { findCollection } from '../../collection/find-collection';
+import { get } from '../../leveldb-wrapper/get';
 
 /**
  * Finds multiple documents in a specified collection based on field values, including date fields like `createdAt` and `updatedAt`.
  * Supports pagination via `limit` and `offset`, and allows selecting specific fields to be returned for each document.
- * 
+ *
  * @param db - The RocksDB instance to interact with.
  * @param collectionName - The name of the collection where the documents are stored.
  * @param query - An object containing the field values to search for in the documents.
@@ -13,11 +13,11 @@ import { findCollection } from '../../collection/find-collection';
  * @param limit - The number of documents to return (for pagination). Optional, defaults to undefined.
  * @param offset - The starting index of the documents to return (for pagination). Optional, defaults to undefined.
  * @returns A promise that resolves to an array of found documents, each with the specified fields, or an empty array if no documents are found.
- * @throws An error if the database instance is invalid, the collection does not exist, or the query is invalid. 
+ * @throws An error if the database instance is invalid, the collection does not exist, or the query is invalid.
  *         If no `limit` is specified and more than 200 documents are found, an error is thrown asking to use `limit`.
  */
 export async function find(
-    db: RocksDB,
+    db: LevelUp,
     collectionName: string,
     query: Record<string, any>,
     returnFields: string[] = [],
@@ -45,7 +45,7 @@ export async function find(
             throw new Error('Return fields must be an array of strings.');
         }
 
-        // Validate limit and offset if provided
+        // Validate limit and offset
         if (limit !== undefined && (typeof limit !== 'number' || limit <= 0)) {
             throw new Error('Limit must be a positive number.');
         }
@@ -62,15 +62,15 @@ export async function find(
         // Fetch all keys for the collection
         const collectionKeys = await getAllKeys(db, collectionName);
         if (!collectionKeys || collectionKeys.length === 0) {
-            return []; // No documents found in the collection
+            return []; // No documents found
         }
 
-        // If no limit is provided, check the total number of documents
+        // Enforce limit if no limit provided but too many documents exist
         if (!limit && collectionKeys.length > 200) {
             throw new Error('More than 200 documents found. Please specify a limit.');
         }
 
-        // Find matching documents based on query
+        // Fetch matching documents
         const matchingDocuments: Record<string, any>[] = [];
         let documentsReturned = 0;
 
@@ -80,23 +80,20 @@ export async function find(
 
             const document = JSON.parse(documentString);
 
-            // Check if document matches the query
+            // Match the query fields
             const matchesQuery = Object.keys(query).every((field) => {
                 if (field === 'createdAt' || field === 'updatedAt') {
-                    // If the field is a date, handle range queries
                     if (query[field]?.gte && new Date(document[field]) < new Date(query[field].gte)) return false;
                     if (query[field]?.lte && new Date(document[field]) > new Date(query[field].lte)) return false;
                 } else {
-                    // For other fields, match exact value
                     if (document[field] !== query[field]) return false;
                 }
                 return true;
             });
 
             if (matchesQuery) {
-                // If returnFields is specified, filter the fields
-                const filteredDocument: Record<string, any> = {};
                 if (returnFields.length > 0) {
+                    const filteredDocument: Record<string, any> = {};
                     returnFields.forEach((field) => {
                         if (field in document) {
                             filteredDocument[field] = document[field];
@@ -110,40 +107,40 @@ export async function find(
                 documentsReturned++;
             }
 
-            // Stop if the number of documents reached the limit
             if (limit && documentsReturned >= limit) break;
         }
 
-        // Apply offset and limit for pagination
-        const paginatedDocuments = matchingDocuments.slice(offset || 0, (offset || 0) + (limit || matchingDocuments.length));
-        return paginatedDocuments;
+        return matchingDocuments.slice(offset || 0, (offset || 0) + (limit || matchingDocuments.length));
     } catch (error: any) {
-        throw new Error(`find error: ${error.message}`);
+        throw new Error(`Error finding documents: ${error.message}`);
     }
 }
 
 /**
- * Helper function to fetch all the keys for a specific collection.
- * 
+ * Helper function to fetch all keys for a specific collection.
+ *
  * @param db - The RocksDB instance to interact with.
  * @param collectionName - The name of the collection.
  * @returns A promise that resolves to an array of keys for the collection.
  */
-async function getAllKeys(db: RocksDB, collectionName: string): Promise<string[]> {
+async function getAllKeys(db: LevelUp, collectionName: string): Promise<string[]> {
     const allKeys: string[] = [];
-    const iterator = db.iterator({ keyAsBuffer: true, valueAsBuffer: true });
+    const iterator = db.iterator({
+        gte: `${collectionName}:`,
+        lte: `${collectionName}:\xff`,
+    });
 
     return new Promise((resolve, reject) => {
-        iterator.seek(`${collectionName}:`);
-        iterator.each((key, value) => {
-            if (key) {
-                allKeys.push(key.toString());
-            }
+        const keys: string[] = [];
+        iterator.each((err: any, key: { toString: () => string; }, value: any) => {
+            if (err) reject(err);
+            if (!key) resolve(keys);
+            keys.push(key.toString());
         });
 
         iterator.end((err) => {
-            if (err) return reject(err);
-            resolve(allKeys);
+            if (err) reject(err);
+            resolve(keys);
         });
     });
 }

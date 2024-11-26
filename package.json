@@ -16,7 +16,7 @@
     "db",
     "document",
     "rocksdb",
-    "leveldown"
+    "leveldb"
   ],
   "author": "nasim",
   "license": "MIT",
@@ -27,8 +27,10 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@types/rocksdb": "^3.0.5",
-    "rocksdb": "^5.2.1",
+    "@types/leveldown": "^4.0.6",
+    "@types/levelup": "^5.1.5",
+    "leveldown": "^6.1.1",
+    "levelup": "^5.1.1",
     "uuid": "^11.0.3"
   }
 }
