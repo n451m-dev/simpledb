@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package database;
+
+service DatabaseService {
+  rpc CreateCollection(CreateCollectionRequest) returns (DatabaseResponse);
+  rpc FindCollection(FindCollectionRequest) returns (CollectionResponse);
+  rpc DeleteCollection(DeleteCollectionRequest) returns (DatabaseResponse);
+  rpc ListCollections(EmptyRequest) returns (ListCollectionsResponse);
+  rpc CreateOne(CreateOneRequest) returns (DatabaseResponse);
+  rpc FindOne(FindOneRequest) returns (DocumentResponse);
+}
+
+message CreateCollectionRequest {
+  string collectionName = 1;
+}
+
+message FindCollectionRequest {
+  string collectionName = 1;
+}
+
+message DeleteCollectionRequest {
+  string collectionName = 1;
+}
+
+message EmptyRequest {}
+
+message CreateOneRequest {
+  string collectionName = 1;
+  map<string, string> data = 2;
+}
+
+message FindOneRequest {
+  string collectionName = 1;
+  map<string, string> query = 2;
+}
+
+message DatabaseResponse {
+  string message = 1;
+  bool success = 2;
+}
+
+message CollectionResponse {
+  repeated string collections = 1;
+}
+
+message ListCollectionsResponse {
+  repeated string collections = 1;
+}
+
+message DocumentResponse {
+  map<string, string> document = 1;
+}
