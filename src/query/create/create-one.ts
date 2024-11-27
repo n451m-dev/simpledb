@@ -12,7 +12,7 @@ export async function createOne(
     db: LevelUp,
     collectionName: string,
     document: Record<string, any>,
-    schema?: Record<string, any>
+    // schema?: Record<string, any>
 ): Promise<Record<string, any>> {
     try {
         // Validate database instance
@@ -32,7 +32,7 @@ export async function createOne(
         }
 
         // Validate and prepare the document
-        const preparedDocument = validateAndPrepareDocument(document, schema);
+        const preparedDocument = validateAndPrepareDocument(document);
 
         // Construct the key for this document
         const documentKey = `${collectionName}:${preparedDocument.id}`;
