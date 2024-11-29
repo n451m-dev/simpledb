@@ -1,6 +1,6 @@
-import { LevelUp } from 'levelup';
+import * as levelup from 'levelup';
 
-export async function createCollection(db: LevelUp, collectionName: string): Promise<void> {
+export async function createCollection(db: levelup.LevelUp, collectionName: string): Promise<void> {
     if (!collectionName || typeof collectionName !== 'string') {
         throw new Error('Collection name must be a non-empty string.');
     }
