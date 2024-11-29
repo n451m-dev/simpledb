@@ -11,7 +11,7 @@ export function getOrCreateDatabaseSync(): levelup.LevelUp {
     }
 
     const dbname: string = 'simpledb';
-    const dbPath = join(__dirname, '../../database', dbname);
+    const dbPath = join(__dirname, '../../data', dbname);
 
     // Ensure the directory exists synchronously
     const databaseDir = join(__dirname, '../../database');
