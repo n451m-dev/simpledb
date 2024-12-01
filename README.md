@@ -20,37 +20,37 @@ SimpleDB is a lightweight, document-based database built on top of leveldb. It a
    git clone https://github.com/nasim-coder/simple-db.git
 
 
-2. Methods:
+2. **Methods**:
    ```bash
    Coonect:
    curl -k --http2 -X POST https://localhost:50051/connect -d '{}' -H "Content-Type: application/json"
 
-   Create a collection
+**Create a collection**
    curl -k --http2 -X POST https://localhost:50051/collection/create -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
 
    curl -k --http2 -X POST https://localhost:50051/collection/find -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
 
-   Delete a collection
+**Delete a collection**
    curl -k --http2 -X POST https://localhost:50051/collection/delete -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
 
-   Collection list
+**Collection list**
    curl -k --http2 -X POST https://localhost:50051/collections/list -d '{}' -H "Content-Type: application/json"
 
-   Create document
+**Create document**
    curl -k --http2 -X POST https://localhost:50051/document/create -d '{"collectionName": "myCollection", "data": {"name": "John", "age": 30}}' -H "Content-Type: application/json"
 
-   Delete document
+**Delete document**
    curl -k --http2 -X POST https://localhost:50051/document/delete -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
 
-   Find one document
+**Find one document**
    curl -k --http2 -X POST https://localhost:50051/document/find-one -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
 
-   **Find all**
+**Find all**
    curl -k --http2 -X POST https://localhost:50051/documents/find -d '{"collectionName": "myCollection", "query": {"age": 30}, "options": []}' -H "Content-Type: application/json"
 
    curl -k --http2 -X POST https://localhost:50051/unknown-endpoint -d '{}' -H "Content-Type: application/json"
 
-3. generate key
+3. **generate key**
 
    ```bash
    openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
