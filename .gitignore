@@ -77,3 +77,4 @@ yarn.lock
 .env
 librocksdb.so*
 data/simpledb
+src/certs/*
