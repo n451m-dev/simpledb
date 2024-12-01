@@ -26,28 +26,37 @@ SimpleDB is a lightweight, document-based database built on top of leveldb. It a
    curl -k --http2 -X POST https://localhost:50051/connect -d '{}' -H "Content-Type: application/json"
 
 **Create a collection**
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/collection/create -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
-
+   
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/collection/find -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
 
 **Delete a collection**
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/collection/delete -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
 
 **Collection list**
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/collections/list -d '{}' -H "Content-Type: application/json"
 
 **Create document**
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/document/create -d '{"collectionName": "myCollection", "data": {"name": "John", "age": 30}}' -H "Content-Type: application/json"
 
-**Delete document**
+**Delete document**:
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/document/delete -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
 
-**Find one document**
+**Find one document**:
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/document/find-one -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
 
 **Find all**
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/documents/find -d '{"collectionName": "myCollection", "query": {"age": 30}, "options": []}' -H "Content-Type: application/json"
 
+   ```bash
    curl -k --http2 -X POST https://localhost:50051/unknown-endpoint -d '{}' -H "Content-Type: application/json"
 
 3. **generate key**
