@@ -14,7 +14,9 @@ export function getOrCreateDatabaseSync(): levelup.LevelUp {
     const dbPath = join(__dirname, '../../data', dbname);
 
     // Ensure the directory exists synchronously
-    const databaseDir = join(__dirname, '../../database');
+    const databaseDir = join(__dirname, '../../data');
+    console.log("databaseDir", databaseDir);
+    
     if (!existsSync(databaseDir)) {
         mkdirSync(databaseDir, { recursive: true });
     }
