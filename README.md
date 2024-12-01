@@ -45,7 +45,7 @@ SimpleDB is a lightweight, document-based database built on top of leveldb. It a
    Find one document
    curl -k --http2 -X POST https://localhost:50051/document/find-one -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
 
-   Find all
+   *Find all*
    curl -k --http2 -X POST https://localhost:50051/documents/find -d '{"collectionName": "myCollection", "query": {"age": 30}, "options": []}' -H "Content-Type: application/json"
 
    curl -k --http2 -X POST https://localhost:50051/unknown-endpoint -d '{}' -H "Content-Type: application/json"
