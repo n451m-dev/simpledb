@@ -99,7 +99,7 @@ export class DatabaseInterface {
         }
     }
 
-    async find(collectionName: string, query: Record<string, any>, options?: string[]) {
+    async find(collectionName: string, query: Record<string, any> = {}, options: string[] = []): Promise<any[]> {
         try {
             return await find(this.db, collectionName, query, options);
         } catch (err) {
@@ -107,4 +107,5 @@ export class DatabaseInterface {
             throw err;
         }
     }
+
 }
