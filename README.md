@@ -17,7 +17,7 @@ SimpleDB is a lightweight, document-based database built on top of leveldb. It a
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/nasim-coder/simple-db.git
+   git clone https://github.com/nasim-coder/simpledb.git
 
 
 2. Methods:
