@@ -1,30 +1,26 @@
 import { LevelUp } from 'levelup';
 import { findCollection } from '../../collection/find-collection';
-import { get } from '../../leveldb-wrapper/get';
 
 /**
- * Finds multiple documents in a specified collection based on field values, including date fields like `createdAt` and `updatedAt`.
- * Supports pagination via `limit` and `offset`, and allows selecting specific fields to be returned for each document.
+ * Finds multiple documents in a specified collection based on field values.
+ * Allows selecting specific fields to be returned.
  *
- * @param db - The RocksDB instance to interact with.
+ * @param db - The LevelUp instance to interact with.
  * @param collectionName - The name of the collection where the documents are stored.
  * @param query - An object containing the field values to search for in the documents.
  * @param returnFields - An array of field names that should be included in the returned documents. If empty, all fields will be returned.
- * @param limit - The number of documents to return (for pagination). Optional, defaults to undefined.
- * @param offset - The starting index of the documents to return (for pagination). Optional, defaults to undefined.
- * @returns A promise that resolves to an array of found documents, each with the specified fields, or an empty array if no documents are found.
+ * @returns A promise that resolves to an array of found documents with the specified fields.
  * @throws An error if the database instance is invalid, the collection does not exist, or the query is invalid.
- *         If no `limit` is specified and more than 200 documents are found, an error is thrown asking to use `limit`.
  */
 export async function find(
     db: LevelUp,
     collectionName: string,
-    query: Record<string, any>,
-    returnFields: string[] = [],
-    limit?: number,
-    offset?: number
+    query: Record<string, any> = {},
+    returnFields: string[] = []
 ): Promise<Record<string, any>[]> {
     try {
+        console.log("......");
+        
         // Validate database instance
         if (!db || typeof db.get !== 'function') {
             throw new Error('Invalid database instance provided.');
@@ -40,17 +36,9 @@ export async function find(
             throw new Error('Query must be a valid non-null object.');
         }
 
-        // Validate returnFields
-        if (!Array.isArray(returnFields)) {
+        // Validate return fields
+        if (!Array.isArray(returnFields) || returnFields.some((field) => typeof field !== 'string')) {
             throw new Error('Return fields must be an array of strings.');
-        }
-
-        // Validate limit and offset
-        if (limit !== undefined && (typeof limit !== 'number' || limit <= 0)) {
-            throw new Error('Limit must be a positive number.');
-        }
-        if (offset !== undefined && (typeof offset !== 'number' || offset < 0)) {
-            throw new Error('Offset must be a non-negative number.');
         }
 
         // Check if the collection exists
@@ -59,88 +47,69 @@ export async function find(
             throw new Error(`Collection "${collectionName}" does not exist.`);
         }
 
-        // Fetch all keys for the collection
-        const collectionKeys = await getAllKeys(db, collectionName);
-        if (!collectionKeys || collectionKeys.length === 0) {
-            return []; // No documents found
-        }
-
-        // Enforce limit if no limit provided but too many documents exist
-        if (!limit && collectionKeys.length > 200) {
-            throw new Error('More than 200 documents found. Please specify a limit.');
-        }
-
-        // Fetch matching documents
         const matchingDocuments: Record<string, any>[] = [];
-        let documentsReturned = 0;
 
-        for (const key of collectionKeys) {
-            const documentString = await get(db, key);
-            if (!documentString) continue;
+        // Create an async generator to iterate over documents
+        const iterator = db.iterator({
+            gte: `${collectionName}:`,
+            lte: `${collectionName}:\xff`,
+        });
 
-            const document = JSON.parse(documentString);
+        for await (const [key, value] of asyncIterator(iterator)) {
+            const document = JSON.parse(value.toString());
+            // console.log("document", document);
 
-            // Match the query fields
-            const matchesQuery = Object.keys(query).every((field) => {
-                if (field === 'createdAt' || field === 'updatedAt') {
-                    if (query[field]?.gte && new Date(document[field]) < new Date(query[field].gte)) return false;
-                    if (query[field]?.lte && new Date(document[field]) > new Date(query[field].lte)) return false;
-                } else {
-                    if (document[field] !== query[field]) return false;
-                }
-                return true;
-            });
+            // If query is empty, include all documents
+            const matchesQuery = Object.entries(query).every(
+                ([field, value]) => document[field] === value
+            );
 
             if (matchesQuery) {
                 if (returnFields.length > 0) {
                     const filteredDocument: Record<string, any> = {};
-                    returnFields.forEach((field) => {
+                    for (const field of returnFields) {
                         if (field in document) {
                             filteredDocument[field] = document[field];
                         }
-                    });
+                    }
                     matchingDocuments.push(filteredDocument);
                 } else {
                     matchingDocuments.push(document);
                 }
-
-                documentsReturned++;
             }
-
-            if (limit && documentsReturned >= limit) break;
         }
+        // console.log("matchingDocuments", matchingDocuments);
 
-        return matchingDocuments.slice(offset || 0, (offset || 0) + (limit || matchingDocuments.length));
+        return matchingDocuments; // Return all matching documents
     } catch (error: any) {
         throw new Error(`Error finding documents: ${error.message}`);
     }
 }
 
 /**
- * Helper function to fetch all keys for a specific collection.
- *
- * @param db - The RocksDB instance to interact with.
- * @param collectionName - The name of the collection.
- * @returns A promise that resolves to an array of keys for the collection.
+ * Async generator to iterate over a LevelDB iterator.
+ * @param iterator - The LevelDB iterator.
  */
-async function getAllKeys(db: LevelUp, collectionName: string): Promise<string[]> {
-    const allKeys: string[] = [];
-    const iterator = db.iterator({
-        gte: `${collectionName}:`,
-        lte: `${collectionName}:\xff`,
-    });
+async function* asyncIterator(iterator: any): AsyncGenerator<[string, string]> {
+    while (true) {
+        try {
+            const [key, value] = await new Promise<[string, string]>((resolve, reject) => {
+                iterator.next((err: Error | null, key: string, value: string) => {
+                    if (err) return reject(err);
+                    if (key === undefined && value === undefined) {
+                        iterator.end(() => { });
+                        resolve(null as any);
+                    } else {
+                        resolve([key, value]);
+                    }
+                });
+            });
 
-    return new Promise((resolve, reject) => {
-        const keys: string[] = [];
-        iterator.each((err: any, key: { toString: () => string; }, value: any) => {
-            if (err) reject(err);
-            if (!key) resolve(keys);
-            keys.push(key.toString());
-        });
-
-        iterator.end((err) => {
-            if (err) reject(err);
-            resolve(keys);
-        });
-    });
+            if (!key) break;
+            yield [key, value];
+        } catch (err) {
+            iterator.end(() => { });
+            break;
+        }
+    }
 }
