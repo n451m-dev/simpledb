@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Its a simple document based database project created on top of rocksdb",
   "main": "dist/index.js",
+  "bin": {
+    "simplesh": "./dist/bin/simplesh.js"
+  },
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
