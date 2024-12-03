@@ -6,7 +6,7 @@ const dbInterface = new DatabaseInterface();
 const parseJSON = async (stream: any): Promise<any> => {
     return new Promise((resolve, reject) => {
         let body = "";
-        stream.on("data", (chunk) => (body += chunk));
+        stream.on("data", (chunk: string) => (body += chunk));
         stream.on("end", () => {
             try {
                 resolve(JSON.parse(body));
@@ -52,6 +52,7 @@ export const requestHandler = async (stream: any, method: string, urlpath: strin
             stream.end(JSON.stringify({ collections }));
         } else if (urlpath === "/document/create") {
             const { collectionName, data } = await parseJSON(stream);
+            console.log("collectionName, data", collectionName, typeof data);
             await dbInterface.createOne(collectionName, data);
             stream.respond({ 'content-type': 'application/json', ':status': 200 });
             stream.end(JSON.stringify({ message: "Document created successfully", success: true }));
