@@ -1,36 +1,30 @@
 import { parseQuery } from "./parse-query";
-import { DatabaseInterface } from "../database/db-interface";
-
-// Create a singleton instance of the DatabaseInterface
-const dbInterface = new DatabaseInterface();
+import { createCollection, deleteCollection, listCollections, createDocument, deleteDocument, findOneDocument, findAllDocuments } from "./make-db-request";
 
 export const performOperation = async (input: string): Promise<any> => {
     try {
         const { collection, method, args } = parseQuery(input);
 
-        // Collection-related methods
-        if (collection === "collection" && method === "create") {
-            return await dbInterface.createCollection(args?.collectionName || "");
-        } else if (collection === "collection" && method === "listCollection") {
-            return await dbInterface.listCollections();
-        } else if (collection === "collection" && method === "delete") {
-            return await dbInterface.deleteCollection(args?.collectionName || "");
-        } else if (collection === "collection" && method === "truncate") {
-            return await dbInterface.truncateCollection(args?.collectionName || "");
+        // Handling collection-related methods
+        switch (`${collection}-${method}`) {
+            case 'collection-create':
+                return await createCollection(args);
+            case 'collection-listCollection':
+                return await listCollections();
+            case 'collection-delete':
+                return await deleteCollection(args);
+            case 'document-createOne':
+                return await createDocument(collection, args);
+            case 'document-deleteOne':
+                return await deleteDocument(collection, args);
+            case 'document-findOne':
+                return await findOneDocument(collection, args);
+            case 'document-find':
+                return await findAllDocuments(collection, args);
+            default:
+                throw Error('Incorrect Command');
         }
 
-        // Document-related methods
-        if (method === "createOne") {
-            return await dbInterface.createOne(collection, args || {});
-        } else if (method === "deleteOne") {
-            return await dbInterface.deleteOne(collection, args || {});
-        } else if (method === "findOne") {
-            return await dbInterface.findOne(collection, args || {});
-        } else if (method === "find") {
-            return await dbInterface.find(collection, args?.query || {}, args?.options || []);
-        } else {
-            throw new Error("Incorrect Command");
-        }
     } catch (err) {
         throw err;
     }
