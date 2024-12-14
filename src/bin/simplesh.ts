@@ -6,7 +6,6 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     prompt: 'simplesh> ',
-    terminal: false // Disables input echoing
 });
 
 // Manually write the prompt
