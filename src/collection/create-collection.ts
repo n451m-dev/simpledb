@@ -1,6 +1,7 @@
 import * as levelup from 'levelup';
 
 export async function createCollection(db: levelup.LevelUp, collectionName: string): Promise<void> {
+    try {
     if (!collectionName || typeof collectionName !== 'string') {
         throw new Error('Collection name must be a non-empty string.');
     }
@@ -12,4 +13,7 @@ export async function createCollection(db: levelup.LevelUp, collectionName: stri
     }
 
     return db.put(collectionKey, 'exists');
+    } catch (err) {
+        throw err;
+    }
 }
