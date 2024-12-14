@@ -22,5 +22,5 @@ server.on('stream', (stream, headers) => {
 // Start the server
 
 server.listen(PORT, () => {
-    console.log(`HTTP/2 server is running on https://localhost:${PORT}`);
+    console.log(`simpledb is running on port: ${PORT}`);
 });
