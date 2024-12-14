@@ -56,7 +56,7 @@ export async function deleteOne(
         });
 
         return true; // Document successfully deleted
-    } catch (error: any) {
-        throw new Error(`Error deleting document: ${error.message}`);
+    } catch (err: any) {
+        throw err;
     }
 }

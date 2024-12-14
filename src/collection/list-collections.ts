@@ -1,6 +1,9 @@
 import { LevelUp } from 'levelup';
 
 export async function listCollections(db: LevelUp): Promise<string[]> {
+    try {
+        
+    
     const collections: string[] = [];
     return new Promise((resolve, reject) => {
         const iterator = db.iterator({ gte: '__collection:', lte: '__collection;\xff' });
@@ -25,4 +28,7 @@ export async function listCollections(db: LevelUp): Promise<string[]> {
         };
         processNext();
     });
+    } catch (err) {
+        throw err;
+    }
 }

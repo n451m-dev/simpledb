@@ -8,6 +8,7 @@ import { LevelUp } from 'levelup';
  * @returns A promise that resolves when the document is deleted.
  */
 export async function deleteDocument(db: LevelUp, key: string): Promise<void> {
+    try {
     if (!key || typeof key !== 'string') {
         throw new Error('Invalid key. Key must be a non-empty string.');
     }
@@ -18,4 +19,7 @@ export async function deleteDocument(db: LevelUp, key: string): Promise<void> {
             resolve();
         });
     });
+    } catch (err) {
+        throw err;
+    }
 }

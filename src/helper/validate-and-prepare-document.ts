@@ -13,6 +13,9 @@ export function validateAndPrepareDocument(
     document: Record<string, any>,
     // schema?: Record<string, any>
 ): Record<string, any> {
+    try {
+        
+   
     if (typeof document !== 'object' || document === null || Array.isArray(document)) {
         throw new Error('Document must be a valid non-null object.');
     }
@@ -41,4 +44,7 @@ export function validateAndPrepareDocument(
         createdAt: timestamp,
         updatedAt: timestamp,
     };
+    } catch (err) {
+        throw err;
+    }
 }

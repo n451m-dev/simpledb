@@ -75,8 +75,8 @@ export async function findOne(
         }
 
         return null; // No matching document found
-    } catch (error: any) {
-        throw new Error(`Error finding document: ${error.message}`);
+    } catch (err: any) {
+        throw err;
     }
 }
 

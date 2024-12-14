@@ -8,6 +8,8 @@ import levelup, { LevelUp } from 'levelup';
  * @returns A promise that resolves to the opened database instance.
  */
 export async function openDB(path: string): Promise<LevelUp> {
+try {
+    
     if (!path || typeof path !== 'string') {
         throw new Error('Invalid path. Path must be a non-empty string.');
     }
@@ -19,4 +21,7 @@ export async function openDB(path: string): Promise<LevelUp> {
             resolve(db);
         });
     });
+} catch (err) {
+    throw err;
+}
 }

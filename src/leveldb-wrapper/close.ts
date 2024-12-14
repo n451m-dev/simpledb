@@ -7,10 +7,14 @@ import { LevelUp } from 'levelup';
  * @returns A promise that resolves when the database is closed.
  */
 export async function closeDB(db: LevelUp): Promise<void> {
+    try {
     return new Promise((resolve, reject) => {
         db.close((err) => {
             if (err) return reject(new Error(`Failed to close database: ${err.message}`));
             resolve();
         });
     });
+    } catch (err) {
+        throw err;
+    }
 }

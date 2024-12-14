@@ -42,7 +42,7 @@ export async function createOne(
 
         // Return the prepared document
         return preparedDocument;
-    } catch (error: any) {
-        throw new Error(`createOne error: ${error.message}`);
+    } catch (err: any) {
+        throw err;
     }
 }

@@ -11,6 +11,7 @@ export async function batch(
     db: LevelUp,
     operations: { type: 'put' | 'del'; key: string; value?: string }[]
 ): Promise<void> {
+    try {
     if (!Array.isArray(operations) || operations.length === 0) {
         throw new Error('Invalid operations. Provide a non-empty array of operations.');
     }
@@ -39,4 +40,7 @@ export async function batch(
             resolve();
         });
     });
+    } catch (err) {
+        throw err;
+    }
 }

@@ -9,6 +9,7 @@ import { LevelUp } from 'levelup';
  * @returns A promise that resolves when the operation completes.
  */
 export async function putDocument(db: LevelUp, key: string, value: string): Promise<void> {
+    try {
     if (!key || typeof key !== 'string') {
         throw new Error('Invalid key. Key must be a non-empty string.');
     }
@@ -23,4 +24,8 @@ export async function putDocument(db: LevelUp, key: string, value: string): Prom
             resolve();
         });
     });
+
+    } catch (err) {
+        throw err;
+    }
 }

@@ -8,6 +8,8 @@ import { LevelUp } from 'levelup';
  * @returns A promise that resolves to the value as a string or `null` if not found.
  */
 export async function get(db: LevelUp, key: string): Promise<string | null> {
+    try {
+        
     if (!key || typeof key !== 'string') {
         throw new Error('Invalid key. Key must be a non-empty string.');
     }
@@ -25,4 +27,7 @@ export async function get(db: LevelUp, key: string): Promise<string | null> {
             }
         });
     });
+    } catch (err) {
+        throw err;
+    }
 }
