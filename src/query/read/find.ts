@@ -19,7 +19,6 @@ export async function find(
     returnFields: string[] = []
 ): Promise<Record<string, any>[]> {
     try {
-        console.log("......");
         
         // Validate database instance
         if (!db || typeof db.get !== 'function') {
@@ -81,8 +80,8 @@ export async function find(
         // console.log("matchingDocuments", matchingDocuments);
 
         return matchingDocuments; // Return all matching documents
-    } catch (error: any) {
-        throw new Error(`Error finding documents: ${error.message}`);
+    } catch (err) {
+        throw err;
     }
 }
 
