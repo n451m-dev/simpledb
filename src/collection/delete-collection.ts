@@ -1,6 +1,9 @@
 import { LevelUp } from 'levelup';
 
-export async function deleteCollection(db: LevelUp, collectionName: string): Promise<void> {
+export async function deleteCollection(db: LevelUp, collectionName: string) {
+    try {
+        
+  
     if (!collectionName || typeof collectionName !== 'string') {
         throw new Error('Collection name must be a non-empty string.');
     }
@@ -10,6 +13,12 @@ export async function deleteCollection(db: LevelUp, collectionName: string): Pro
     if (!exists) {
         throw new Error(`Collection "${collectionName}" does not exist.`);
     }
+   
+    await db.del(collectionKey);
 
-    return db.del(collectionKey);
+        return `Collection "${collectionName}" deleted successfully`
+
+    } catch (err) {
+        throw err;
+    }
 }
