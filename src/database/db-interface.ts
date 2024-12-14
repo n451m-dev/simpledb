@@ -22,7 +22,6 @@ export class DatabaseInterface {
         try {
             this.db.open();
         } catch (err) {
-            console.error("Error opening the database:", err);
             throw err;
         }
     }
@@ -31,7 +30,6 @@ export class DatabaseInterface {
         try {
             return await createCollection(this.db, collectionName);
         } catch (err) {
-            console.error("Error creating collection:", err);
             throw err;
         }
     }
@@ -40,7 +38,6 @@ export class DatabaseInterface {
         try {
             return await findCollection(this.db, collectionName);
         } catch (err) {
-            console.error("Error finding collection:", err);
             throw err;
         }
     }
@@ -49,7 +46,6 @@ export class DatabaseInterface {
         try {
             return await deleteCollection(this.db, collectionName);
         } catch (err) {
-            console.error("Error deleting collection:", err);
             throw err;
         }
     }
@@ -58,7 +54,6 @@ export class DatabaseInterface {
         try {
             return await listCollections(this.db);
         } catch (err) {
-            console.error("Error listing collections:", err);
             throw err;
         }
     }
@@ -67,7 +62,6 @@ export class DatabaseInterface {
         try {
             return await truncateCollection(this.db, collectionName);
         } catch (err) {
-            console.error("Error truncating collection:", err);
             throw err;
         }
     }
@@ -76,7 +70,6 @@ export class DatabaseInterface {
         try {
             return await createOne(this.db, collectionName, data);
         } catch (err) {
-            console.error("Error creating a document:", err);
             throw err;
         }
     }
@@ -85,7 +78,6 @@ export class DatabaseInterface {
         try {
             return await deleteOne(this.db, collectionName, query);
         } catch (err) {
-            console.error("Error deleting a document:", err);
             throw err;
         }
     }
@@ -94,7 +86,6 @@ export class DatabaseInterface {
         try {
             return await findOne(this.db, collectionName, query);
         } catch (err) {
-            console.error("Error finding a document:", err);
             throw err;
         }
     }
@@ -103,7 +94,6 @@ export class DatabaseInterface {
         try {
             return await find(this.db, collectionName, query, options);
         } catch (err) {
-            console.error("Error finding documents:", err);
             throw err;
         }
     }
