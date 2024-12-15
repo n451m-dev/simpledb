@@ -13,6 +13,7 @@ import { find } from "../query/read/find";
 
 import { getOrCreateDatabaseSync } from "./db-instance";
 import { LevelUp } from "levelup";
+import { updateOne } from "../query/update/update-one";
 
 export class DatabaseInterface {
     private db: LevelUp;
@@ -90,12 +91,16 @@ export class DatabaseInterface {
         }
     }
 
-    async find(collectionName: string, query: Record<string, any> = {}, options: string[] = []): Promise<any[]> {
+    async find(collectionName: string, query: Record<string, any> = {}, options: string[] = []) {
         try {
             return await find(this.db, collectionName, query, options);
         } catch (err) {
             throw err;
         }
+    }
+
+    async updateOne(collectionName: string, query: Record<string, any>, updateData: Record<string, any>) {
+        return await updateOne(this.db, collectionName, query, updateData)
     }
 
 }

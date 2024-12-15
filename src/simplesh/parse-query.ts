@@ -1,6 +1,5 @@
 export function parseQuery(query: string) {
     try {
-        console.log('parse-query');
         
         // Trim the query and remove any trailing semicolon if present
         query = query.trim().replace(/;$/, '');
@@ -15,6 +14,8 @@ export function parseQuery(query: string) {
         }
 
         const [, collection, method, args] = match;
+        
+        
 
         // Validate collection and method
         if (!collection || !method || !/^[a-zA-Z_][\w]*$/.test(collection) || !/^[a-zA-Z_][\w]*$/.test(method)) {
@@ -22,15 +23,19 @@ export function parseQuery(query: string) {
         }
 
         let parsedArgs: Record<string, any> | null = null;
+        let updatedata: Record<string, any>;
 
+        const objarr = args?.split(',')
         // Parse args if provided
-        if (args.trim()) {
+        if (objarr[0].trim()) {
             try {
                 // Ensure keys are properly double-quoted
-                const sanitizedArgs = args.trim().replace(/(\w+)\s*:/g, '"$1":');
-
-                // Parse the sanitized JSON
+                const sanitizedArgs = objarr[0].trim().replace(/(\w+)\s*:/g, '"$1":');
                 parsedArgs = JSON.parse(sanitizedArgs);
+
+                const sanitizedupdateData = objarr[1].trim().replace(/(\w+)\s*:/g, '"$1":');
+                updatedata = JSON.parse(sanitizedupdateData);
+
             } catch (err) {
                 console.error(err);
                 throw new Error('Invalid JSON format in arguments.');
@@ -41,8 +46,9 @@ export function parseQuery(query: string) {
         return {
             collection,
             method,
-            args: parsedArgs, // Null if no arguments are provided
-        };
+            args: parsedArgs,
+            updateData: updatedata
+        }
     } catch (err) {
         throw err;
     }

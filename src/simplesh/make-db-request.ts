@@ -121,6 +121,17 @@ export async function findAllDocuments(collectionName: any, query: any) {
 
 }
 
+export async function updateOneDocument(collectionName: any, query: any, updateData: any) {
+    try {
+        const parsedQuery = typeof query === 'string' ? JSON.parse(query) : query;
+        const parsedUpdateData = typeof updateData === 'string' ? JSON.parse(updateData) : updateData;
+        return await makeRequest('/document/update-one', 'POST', { collectionName, query: parsedQuery, updateData: parsedUpdateData });
+    } catch (err) {
+        throw err
+    }
+
+}
+
 export async function callUnknownEndpoint() {
     try {
         return await makeRequest('/unknown-endpoint', 'POST');

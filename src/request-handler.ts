@@ -34,7 +34,7 @@ export const requestHandler = async (stream: any, method: string, urlpath: strin
         } else if (urlpath === "/collection/create") {
             const { collectionName } = await parseJSON(stream);
             await dbInterface.createCollection(collectionName);
-            stream.respond({ 'content-type': 'application/json', ':status': 200 });
+            stream.respond({ 'content-type': 'application/json', ':status': 201 });
             stream.end(JSON.stringify({ message: "Collection created successfully", success: true }));
         } else if (urlpath === "/collection/find") {
             const { collectionName } = await parseJSON(stream);
@@ -71,6 +71,11 @@ export const requestHandler = async (stream: any, method: string, urlpath: strin
             const documents = await dbInterface.find(collectionName, query || {}, options || []);
             stream.respond({ 'content-type': 'application/json', ':status': 200 });
             stream.end(JSON.stringify({ documents }));
+        } else if (urlpath === "/document/update-one"){
+            const { collectionName, query, updateData } = await parseJSON(stream);
+            const updated = await dbInterface.updateOne(collectionName, query, updateData);
+            stream.respond({ 'content-type': 'application/json', ':status': 200 });
+            stream.end(JSON.stringify({ updated }));
         } else {
             stream.respond({ 'content-type': 'application/json', ':status': 404 });
             stream.end(JSON.stringify({ error: "Route not found" }));

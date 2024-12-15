@@ -1,6 +1,5 @@
 import { LevelUp } from 'levelup';
 import { findCollection } from '../../collection/find-collection';
-import { get } from '../../leveldb-wrapper/get';
 
 /**
  * Deletes a single document from a specified collection based on field values.
@@ -38,25 +37,68 @@ export async function deleteOne(
             throw new Error(`Collection "${collectionName}" does not exist.`);
         }
 
-        // Generate the query key
-        const queryKey = `${collectionName}:${JSON.stringify(query)}`;
-
-        // Attempt to get the document to ensure it exists
-        const documentString = await get(db, queryKey);
-        if (!documentString) {
-            return false; // Document not found
-        }
-
-        // Delete the document
-        await new Promise<void>((resolve, reject) => {
-            db.del(queryKey, (err) => {
-                if (err) reject(err);
-                else resolve();
-            });
+        // Create an iterator for the collection
+        const iterator = db.iterator({
+            gte: `${collectionName}:`,
+            lte: `${collectionName}:\xff`,
         });
 
-        return true; // Document successfully deleted
+        let documentFound = false;
+
+        try {
+            for await (const [key, value] of asyncIterator(iterator)) {
+                const document = JSON.parse(value.toString());
+
+                // Compare query fields with document fields
+                const isMatch = Object.entries(query).every(
+                    ([queryKey, queryValue]) => document[queryKey] === queryValue
+                );
+
+                if (isMatch) {
+                    documentFound = true;
+
+                    // Delete the document
+                    await new Promise<void>((resolve, reject) => {
+                        db.del(key, (err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                    });
+
+                    break; // Stop after the document is deleted
+                }
+            }
+        } finally {
+            iterator.end(() => { });
+        }
+
+        return documentFound; // Return whether a document was deleted
     } catch (err: any) {
         throw err;
+    }
+}
+
+/**
+ * Async generator to iterate over a LevelDB iterator.
+ * @param iterator - The LevelDB iterator.
+ */
+async function* asyncIterator(iterator: any): AsyncGenerator<[string, string]> {
+    try {
+        while (true) {
+            const result = await new Promise<{ key?: string; value?: string }>((resolve, reject) => {
+                iterator.next((err: Error | null, key: string, value: string) => {
+                    if (err) return reject(err);
+                    resolve({ key, value });
+                });
+            });
+
+            if (!result.key) break; // End of iteration
+            yield [result.key, result.value];
+        }
+    } catch (err) {
+        console.error("Iterator Error:", err);
+        throw err; // Re-throw the error for outer handling
+    } finally {
+        iterator.end(() => { });
     }
 }
