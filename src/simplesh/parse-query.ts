@@ -1,5 +1,7 @@
 export function parseQuery(query: string) {
     try {
+        console.log('parse-query');
+        
         // Trim the query and remove any trailing semicolon if present
         query = query.trim().replace(/;$/, '');
 
@@ -24,11 +26,17 @@ export function parseQuery(query: string) {
         // Parse args if provided
         if (args.trim()) {
             try {
-                parsedArgs = JSON.parse(args.trim());
+                // Ensure keys are properly double-quoted
+                const sanitizedArgs = args.trim().replace(/(\w+)\s*:/g, '"$1":');
+
+                // Parse the sanitized JSON
+                parsedArgs = JSON.parse(sanitizedArgs);
             } catch (err) {
+                console.error(err);
                 throw new Error('Invalid JSON format in arguments.');
             }
         }
+
 
         return {
             collection,

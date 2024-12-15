@@ -3,9 +3,8 @@ import { createCollection, createDocument, deleteCollection, deleteDocument, fin
 
 export const performOperation = async (input: string): Promise<any> => {
     try {
-
         const { collection, method, args } = parseQuery(input);
-        // console.log("collection, method, args", collection, method, args);
+        console.log("collection, method, args", collection, method, args);
 
         // collection related methods
         if (collection == 'collection' && method === 'create') {
@@ -14,6 +13,7 @@ export const performOperation = async (input: string): Promise<any> => {
             return await listCollections();
         } else if (collection === 'collection' && method === 'delete') {
             return await deleteCollection(args)
+            // document related
         } else if (method === 'createOne') {
             return await createDocument(collection, args)
         } else if (method === 'deleteOne') {
@@ -23,7 +23,7 @@ export const performOperation = async (input: string): Promise<any> => {
         } else if (method === 'find') {
             return await findAllDocuments(collection, args)
         } else{
-            throw Error('Incorrect Command')
+            throw Error('Incorrect command')
         }
     } catch (err) {
         throw err

@@ -9,7 +9,8 @@ const rl = readline.createInterface({
 });
 
 // Manually write the prompt
-process.stdout.write('simplesh> ');
+// process.stdout.write('simplesh> ');
+rl.prompt()
 
 // Use an async wrapper to handle the line event
 rl.on('line', async (line: string) => {
@@ -18,12 +19,13 @@ rl.on('line', async (line: string) => {
         try {
             const output = await performOperation(input);
             console.log(output);
-        } catch (error) {
-            console.error(`Error: ${error.message}`);
+        } catch (err) {
+            console.error(err.message);
         }
     }
-    // Write the prompt manually
-    process.stdout.write('simplesh> ');
+
+    // process.stdout.write('simplesh> ');
+    rl.prompt()
 });
 
 rl.on('close', () => {
