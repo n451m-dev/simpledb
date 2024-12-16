@@ -4,7 +4,7 @@ import { createCollection, createDocument, deleteCollection, deleteDocument, fin
 export const performOperation = async (input: string): Promise<any> => {
     try {
         const { collection, method, args, updateData } = parseQuery(input);
-        console.log("collection, method, args", collection, method, args);
+        // console.log("collection, method, args", collection, method, args);
 
         // collection related methods
         if (collection == 'collection' && method === 'create') {

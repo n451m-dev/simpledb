@@ -16,7 +16,7 @@ export function getOrCreateDatabaseSync(): levelup.LevelUp {
 
         // Ensure the directory exists synchronously
         const databaseDir = join(__dirname, '../../data');
-        console.log("databaseDir", databaseDir);
+        // console.log("databaseDir", databaseDir);
 
         if (!existsSync(databaseDir)) {
             mkdirSync(databaseDir, { recursive: true });
@@ -25,7 +25,7 @@ export function getOrCreateDatabaseSync(): levelup.LevelUp {
         // Open the database (leveldown doesn't provide a truly synchronous way to "open", so it's assumed here)
         try {
             dbInstance = levelup(leveldown(dbPath));
-            console.log(`Database "${dbname}" initialized successfully.`);
+            // console.log(`Database "${dbname}" initialized successfully.`);
         } catch (err) {
             console.error('Error initializing database:', err);
             throw err;

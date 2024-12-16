@@ -52,7 +52,7 @@ export const requestHandler = async (stream: any, method: string, urlpath: strin
             stream.end(JSON.stringify({ collections }));
         } else if (urlpath === "/document/create") {
             const { collectionName, data } = await parseJSON(stream);
-            console.log("collectionName, data", collectionName, typeof data);
+            // console.log("collectionName, data", collectionName, typeof data);
             await dbInterface.createOne(collectionName, data);
             stream.respond({ 'content-type': 'application/json', ':status': 200 });
             stream.end(JSON.stringify({ message: "Document created successfully", success: true }));
