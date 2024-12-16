@@ -65,7 +65,7 @@ export async function updateOne(
                     documentUpdated = true;
 
                     // Merge update data into the existing document
-                    const updatedDocument = { ...document, ...updateData };
+                    const updatedDocument = { ...document, ...updateData, updatedAt: new Date().toISOString(), };
 
                     // Save the updated document
                     await new Promise<void>((resolve, reject) => {
