@@ -33,8 +33,8 @@ export function parseQuery(query: string) {
                 const sanitizedArgs = objarr[0].trim().replace(/(\w+)\s*:/g, '"$1":');
                 parsedArgs = JSON.parse(sanitizedArgs);
 
-                const sanitizedupdateData = objarr[1].trim().replace(/(\w+)\s*:/g, '"$1":');
-                updatedata = JSON.parse(sanitizedupdateData);
+                const sanitizedupdateData = objarr[1]?.trim()?.replace(/(\w+)\s*:/g, '"$1":');
+                updatedata = sanitizedupdateData && JSON?.parse(sanitizedupdateData);
 
             } catch (err) {
                 console.error(err);
