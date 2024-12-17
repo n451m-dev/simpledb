@@ -59,3 +59,14 @@ SimpleDB is a lightweight, document-based database built on top of leveldb. It a
 
 
 
+npm run build
+
+cp -r dist simpledb/usr/local/simpledb/
+cp package.json package-lock.json simpledb/usr/local/simpledb/
+cp -r node_modules simpledb/usr/local/simpledb/
+
+dpkg-deb --build simpledb
+
+sudo dpkg -i simpledb.deb
+
+sudo systemctl restart simpledb
