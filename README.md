@@ -1,72 +1,74 @@
 # SimpleDB
 
-SimpleDB is a lightweight, document-based database built on top of leveldb. It aims to provide a simple, JSON-based applications, focusing on CRUD operations and multiple document management, created for learning purposes.
-
----
+**SimpleDB** is a lightweight, document-based database built on top of leveldb. It provides efficient storage and retrieval of documents using a simple interface.
 
 ## Features
 
-- **Document Storage**: Store and manage multiple JSON-based documents.
-- **CRUD Operations**: Create, Read, Update, and Delete support for documents.
-- **Collections**: Organize documents into collections.
-- **Built on levelDB**: Leveraging leveldb for fast and efficient key-value storage.
+- Lightweight and fast
+- Document-based storage
+- Built on top of leveldb for high-performance read write.
 
----
+## Getting Started
 
-## Installation And Usage
+### Prerequisites
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/nasim-coder/simpledb.git
+- **Ubuntu** (or other Linux distributions)
+- **Node.js** (bundled with the SimpleDB package)
+- **Systemd** for service management
 
+### Installation
 
-2. Methods:
-   ```bash
+1. ****Download and Install SimpleDB****
+
+   Download the `.deb` package for AMD64 Machine from the GitHub release page and install.
+
+2. ****Starting the service****
+
+   <code> 
+   sudo systemctl start simpledb
+   </code>
    
-   Coonect:
-   curl -k --http2 -X POST https://localhost:50051/connect -d '{}' -H "Content-Type: application/json"
 
-   Create a collection
-   curl -k --http2 -X POST https://localhost:50051/collection/create -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
+3. ****Enable to start on boot****
+   
 
-   curl -k --http2 -X POST https://localhost:50051/collection/find -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
+   <code> 
+   sudo systemctl enable simpledb
+   </code>
 
-   Delete a collection
-   curl -k --http2 -X POST https://localhost:50051/collection/delete -d '{"collectionName": "myCollection"}' -H "Content-Type: application/json"
-
-   Collection list
-   curl -k --http2 -X POST https://localhost:50051/collections/list -d '{}' -H "Content-Type: application/json"
-
-   Create document
-   curl -k --http2 -X POST https://localhost:50051/document/create -d '{"collectionName": "myCollection", "data": {"name": "John", "age": 30}}' -H "Content-Type: application/json"
-
-   Delete document
-   curl -k --http2 -X POST https://localhost:50051/document/delete -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
-
-   Find one document
-   curl -k --http2 -X POST https://localhost:50051/document/find-one -d '{"collectionName": "myCollection", "query": {"name": "John"}}' -H "Content-Type: application/json"
-
-   Find all
-   curl -k --http2 -X POST https://localhost:50051/documents/find -d '{"collectionName": "myCollection", "query": {"age": 30}, "options": []}' -H "Content-Type: application/json"
-
-   curl -k --http2 -X POST https://localhost:50051/unknown-endpoint -d '{}' -H "Content-Type: application/json"
-
-3. generate key
-
-   ```bash
-   openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 365
+4. ****Open terminal and type simplesh****
 
 
+   <code> 
+   simplesh
+   </code>
+
+   <p> 
+   It will open the shell to connect to the database, there is no authentication implemented, so it is not recommended to use in production environmnet, just to test it out.
+   </p>
 
 
-npm run build
+   <p> 
+   Oncee connected to the shell you can perform crud operations.
+   </p>
 
-cp -r dist simpledb/usr/local/simpledb/
-cp package.json package-lock.json simpledb/usr/local/simpledb/
-cp -r node_modules simpledb/usr/local/simpledb/
+   <strong> Create Collection</strong>
+   <code>collection.create({collectionName: "users"}) </code>
 
-dpkg-deb --build simpledb
+   <strong> List Collections</strong>
+   <code>collection.listCollection() </code>
 
-sudo dpkg -i simpledb.deb
+   <strong> Create document</strong>
+   <code>users.createOne({name: "John Doe"}) </code>
 
-sudo systemctl restart simpledb
+   <strong> Read one document</strong>
+   <code>users.findOne({name: "John Doe"}) </code>
+
+   <strong> Read all document(arg optional)</strong>
+   <code>users.find({name: "John Doe"}) </code>
+
+   <strong>Update document</strong>
+   <code>users.updateOne({name: "John Doe"}, {name: "Doe John"}) </code>
+
+   <strong> Delete document</strong>
+   <code>users.deleteOne({name: "Doe John"})</code>
