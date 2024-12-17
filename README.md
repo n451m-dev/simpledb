@@ -38,9 +38,8 @@
 
 4. ****Open terminal and type simplesh****
 
-
    <code> 
-   simplesh
+      simplesh
    </code>
 
    <p> 
@@ -49,26 +48,46 @@
 
 
    <p> 
-   Oncee connected to the shell you can perform crud operations.
+   Once connected to the shell you can perform crud operations.
    </p>
 
    <strong> Create Collection</strong>
+
+
    <code>collection.create({collectionName: "users"}) </code>
 
+
    <strong> List Collections</strong>
+
+
    <code>collection.listCollection() </code>
 
+
    <strong> Create document</strong>
+
+
    <code>users.createOne({name: "John Doe"}) </code>
 
+
    <strong> Read one document</strong>
+
+
    <code>users.findOne({name: "John Doe"}) </code>
 
+
    <strong> Read all document(arg optional)</strong>
+
+
    <code>users.find({name: "John Doe"}) </code>
 
+
    <strong>Update document</strong>
+
+
    <code>users.updateOne({name: "John Doe"}, {name: "Doe John"}) </code>
 
+
    <strong> Delete document</strong>
+
+
    <code>users.deleteOne({name: "Doe John"})</code>
