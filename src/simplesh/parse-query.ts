@@ -1,9 +1,9 @@
 export function parseQuery(query: string) {
     try {
-        
-        // Trim the query and remove any trailing semicolon if present
+        // Trim the query and remove any trailing semicolon
         query = query.trim().replace(/;$/, '');
 
+        // Regular expression to match the expected pattern
         const regex = /^([\w]+)\.([\w]+)\((.*)\)$/;
 
         // Match the query with the expected pattern
@@ -14,41 +14,42 @@ export function parseQuery(query: string) {
         }
 
         const [, collection, method, args] = match;
-        
-        
 
         // Validate collection and method
         if (!collection || !method || !/^[a-zA-Z_][\w]*$/.test(collection) || !/^[a-zA-Z_][\w]*$/.test(method)) {
             throw new Error('Invalid collection or method name. Must be a valid string and not a number.');
         }
 
-        let parsedArgs: Record<string, any> | null = null;
-        let updatedata: Record<string, any>;
+        let parsedArgs = null;
+        let updatedata = null;
 
-        const objarr = args?.split(',')
-        // Parse args if provided
-        if (objarr[0].trim()) {
+        // Pattern to match JavaScript objects in arguments
+        const objectPattern = /{[^{}]+}/g;
+
+        // Extract and parse objects from the arguments
+        const matches = args.match(objectPattern);
+
+        if (matches) {
             try {
-                // Ensure keys are properly double-quoted
-                const sanitizedArgs = objarr[0].trim().replace(/(\w+)\s*:/g, '"$1":');
+                const sanitizedArgs = matches[0].trim().replace(/(\w+)\s*:/g, '"$1":');
                 parsedArgs = JSON.parse(sanitizedArgs);
 
-                const sanitizedupdateData = objarr[1]?.trim()?.replace(/(\w+)\s*:/g, '"$1":');
-                updatedata = sanitizedupdateData && JSON?.parse(sanitizedupdateData);
-
+                if (matches[1]) {
+                    const sanitizedUpdateData = matches[1].trim().replace(/(\w+)\s*:/g, '"$1":');
+                    updatedata = JSON.parse(sanitizedUpdateData);
+                }
             } catch (err) {
                 console.error(err);
                 throw new Error('Invalid JSON format in arguments.');
             }
         }
 
-
         return {
             collection,
             method,
             args: parsedArgs,
             updateData: updatedata
-        }
+        };
     } catch (err) {
         throw err;
     }
