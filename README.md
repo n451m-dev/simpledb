@@ -16,27 +16,28 @@
 - **Node.js** (bundled with the SimpleDB package)
 - **Systemd** for service management
 
-### Installation
+## Installation
 
-1. ****Download and Install SimpleDB****
+1. **Download and Install SimpleDB**
 
    Download the `.deb` package for AMD64 Machine from the GitHub release page and install.
 
-2. ****Starting the service****
+2. **Starting the service**
 
    <code> 
    sudo systemctl start simpledb
    </code>
    
 
-3. ****Enable to start on boot****
+3. **Enable to start on boot**
    
 
    <code> 
    sudo systemctl enable simpledb
    </code>
 
-4. ****Open terminal and type simplesh****
+4. **Open terminal and type simplesh**
+
 
    <code> 
       simplesh
