@@ -31,7 +31,6 @@
 
 3. **Enable to start on boot**
    
-
    <code> 
    sudo systemctl enable simpledb
    </code>
