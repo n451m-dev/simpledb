@@ -64,6 +64,12 @@
    <code>collection.listCollection() </code>
 
 
+   <strong> Delete Collection</strong>
+
+
+   <code>collection.delete({collectionName: "users"}) </code>
+
+
    <strong> Create document</strong>
 
 
