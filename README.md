@@ -24,7 +24,6 @@
 
 2. **Starting the service**
 
-   
    <code> 
      sudo systemctl start simpledb
    </code>
