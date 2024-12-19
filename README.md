@@ -22,20 +22,21 @@
   
    Download the `.deb` package for AMD64 Machine from the GitHub release page and install.
 
-4. **Starting the service**
+2. **Starting the service**
 
+   
    <code> 
-   sudo systemctl start simpledb
+     sudo systemctl start simpledb
    </code>
    
 
-5. **Enable to start on boot**
+3. **Enable to start on boot**
    
    <code> 
    sudo systemctl enable simpledb
    </code>
 
-6. **Open terminal and type simplesh**
+4. **Open terminal and type simplesh**
 
 
    <code> 
