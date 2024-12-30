@@ -51,7 +51,7 @@ export async function deleteCollection(db: LevelUp, collectionName: string) {
         const batch = db.batch();
 
         // Add delete operations to the batch
-        for await (const [key, value] of asyncIterator(iterator)) {
+        for await (const key of asyncIterator(iterator)) {
             batch.del(key);
         }
 
