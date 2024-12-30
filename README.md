@@ -19,25 +19,27 @@
 ## Installation
 
 1. **Download and Install SimpleDB**
-
+  
    Download the `.deb` package for AMD64 Machine from the GitHub release page and install.
 
 2. **Starting the service**
 
    <code> 
-   sudo systemctl start simpledb
+     sudo systemctl start simpledb
    </code>
    
 
-3. **Enable to start on boot**
+4. **Enable to start on boot**
    
-
    <code> 
-   sudo systemctl enable simpledb
+     sudo systemctl enable simpledb
    </code>
 
-4. **Open terminal and type simplesh**
+   
+## Try it on
 
+
+1. **Open terminal and type simplesh**
 
    <code> 
       simplesh
@@ -46,7 +48,6 @@
    <p> 
    It will open the shell to connect to the database, there is no authentication implemented, so it is not recommended to use in production environmnet, just to test it out.
    </p>
-
 
    <p> 
    Once connected to the shell you can perform crud operations.
