@@ -66,6 +66,14 @@ export async function createCollection(body: any) {
 
 }
 
+export async function truncateCollection(body: any){
+    try {
+        return makeRequest('/collection/truncate', 'POST', body);
+    } catch (err) {
+        throw err
+    }
+}
+
 export async function deleteCollection(body: any) {
     try {
         return await makeRequest('/collection/delete', 'POST', body);
