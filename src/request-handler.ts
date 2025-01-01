@@ -50,6 +50,11 @@ export const requestHandler = async (stream: any, method: string, urlpath: strin
             const collections = await dbInterface.listCollections();
             stream.respond({ 'content-type': 'application/json', ':status': 200 });
             stream.end(JSON.stringify({ collections }));
+        } else if (urlpath ===  '/collection/truncate'){
+            const { collectionName } = await parseJSON(stream);
+            const message = await dbInterface.truncateCollection(collectionName)
+            stream.respond({ 'content-type': 'application/json', ':status': 200 });
+            stream.end(JSON.stringify({ message }));
         } else if (urlpath === "/document/create") {
             const { collectionName, data } = await parseJSON(stream);
             // console.log("collectionName, data", collectionName, typeof data);
