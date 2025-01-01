@@ -1,29 +1,30 @@
 import { LevelUp } from 'levelup';
+import { asyncIterator } from '../helper/collection-iterator';
 
-/**
- * Async generator to iterate over a LevelDB iterator.
- * @param iterator - The LevelDB iterator.
- */
-async function* asyncIterator(iterator: any): AsyncGenerator<string> {
-    try {
-        while (true) {
-            const result = await new Promise<{ key?: string }>((resolve, reject) => {
-                iterator.next((err: Error | null, key: string) => {
-                    if (err) return reject(err);
-                    resolve({ key });
-                });
-            });
+// /**
+//  * Async generator to iterate over a LevelDB iterator.
+//  * @param iterator - The LevelDB iterator.
+//  */
+// async function* asyncIterator(iterator: any): AsyncGenerator<string> {
+//     try {
+//         while (true) {
+//             const result = await new Promise<{ key?: string }>((resolve, reject) => {
+//                 iterator.next((err: Error | null, key: string) => {
+//                     if (err) return reject(err);
+//                     resolve({ key });
+//                 });
+//             });
 
-            if (!result.key) break; // End of iteration
-            yield result.key;
-        }
-    } catch (err) {
-        console.error("Iterator Error:", err);
-        throw err; // Re-throw the error for outer handling
-    } finally {
-        iterator.end(() => { });
-    }
-}
+//             if (!result.key) break; // End of iteration
+//             yield result.key;
+//         }
+//     } catch (err) {
+//         console.error("Iterator Error:", err);
+//         throw err; // Re-throw the error for outer handling
+//     } finally {
+//         iterator.end(() => { });
+//     }
+// }
 
 /**
  * Deletes a collection and its associated data from the database.
@@ -51,7 +52,7 @@ export async function deleteCollection(db: LevelUp, collectionName: string) {
         const batch = db.batch();
 
         // Add delete operations to the batch
-        for await (const key of asyncIterator(iterator)) {
+        for await (const [key, value] of asyncIterator(iterator)) {
             batch.del(key);
         }
 
