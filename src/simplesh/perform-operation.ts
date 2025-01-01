@@ -1,5 +1,5 @@
 import { parseQuery } from "./parse-query";
-import { createCollection, createDocument, deleteCollection, deleteDocument, findAllDocuments, findOneDocument, listCollections, updateOneDocument } from "./make-db-request";
+import { createCollection, createDocument, deleteCollection, deleteDocument, findAllDocuments, findOneDocument, listCollections, truncateCollection, updateOneDocument } from "./make-db-request";
 
 export const performOperation = async (input: string): Promise<any> => {
     try {
@@ -13,7 +13,10 @@ export const performOperation = async (input: string): Promise<any> => {
             return await listCollections();
         } else if (collection === 'collection' && method === 'delete') {
             return await deleteCollection(args)
-            // document related
+            
+        }else if (collection === 'collection' && method === 'truncate'){
+            return await truncateCollection(args)
+        
         } else if (method === 'createOne') {
             return await createDocument(collection, args)
         } else if (method === 'deleteOne') {
